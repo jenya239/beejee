@@ -1,0 +1,16 @@
+extends layout
+block content
+	h1 Задача
+	form( action='/create_task' method='post' )
+		.form-group
+			label(for='inputUsername') Имя пользователя
+			input#inputUsername.form-control(type='text', aria-describedby='usernameHelp', name='username')
+			small#usernameHelp.form-text.text-muted 
+		.form-group
+			label(for='inputEmail') E-mail
+			input#inputEmail.form-control(type='email', aria-describedby='emailHelp', name='email')
+			small#emailHelp.form-text.text-muted 
+		.form-group
+			label(for='contentTextarea') Текст
+			textarea#contentTextarea.form-control(rows='5', name='content')
+		button.btn.btn-primary(type='submit') Создать
