@@ -4,10 +4,10 @@ block content
 	form( action='/login' method='post' )
 		.form-group
 			label(for='inputLogin') Логин
-			input#inputLogin.form-control(type='text', aria-describedby='loginHelp', name='login')
+			input#inputLogin.form-control.w-50(type='text', aria-describedby='loginHelp', name='login')
 			small#loginHelp.form-text.text-muted 
 		.form-group
 			label(for='inputPassword') Пароль
-			input#inputPassword.form-control(type='password', aria-describedby='emailHelp', name='password')
+			input#inputPassword.form-control.w-50(type='password', aria-describedby='emailHelp', name='password')
 			small#passwordHelp.form-text.text-muted
 		button.btn.btn-primary(type='submit') Войти

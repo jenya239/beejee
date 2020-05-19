@@ -4,6 +4,11 @@ class Routing{
 	private $path;
 	public function __construct( $path ){
 		$this->path = parse_url( $path );
+		$q =[];
+		if( array_key_exists( 'query' , $this->path ) ){
+			parse_str( $this->path[ 'query' ], $q );
+		}
+		$this->path[ 'query' ] = $q;
 		if( $this->path[ 'path' ] == '/' ){
 			$c = new ShowIndex( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/new_task' ){

@@ -1,8 +1,18 @@
 <?php
+const PER_PAGE = 3;
+
 class Task{
 	public static $mysqli;
-	public static function all(){
-		$res = self::$mysqli->query("SELECT * FROM tasks");
+	public function __construct(){
+		if( !property_exists( $this, 'username' ) ) $this->username = '';
+		if( !property_exists( $this, 'email' ) ) $this->email = '';
+		if( !property_exists( $this, 'content' ) ) $this->content = '';
+	}
+	public static function all( $column, $order, $page ){
+		$column = self::escape( $column );
+		$oder = $order == 'desc' ? 'desc' : 'asc';
+		$offset = ($page - 1) * PER_PAGE;
+		$res = self::$mysqli->query("SELECT * FROM tasks ORDER BY $column $order LIMIT $offset, " . PER_PAGE);
 		$arr =[];
 		while( $task = $res->fetch_object( 'Task' ) ){
 			array_push( $arr, $task );
@@ -12,6 +22,10 @@ class Task{
 	public static function find($id){
 		$res = self::$mysqli->query( "SELECT * FROM tasks WHERE id = " . ((int) $id) );
 		return $res->fetch_object( 'Task' );
+	}
+	public static function count(){
+		$res = self::$mysqli->query( "SELECT COUNT(*) AS count FROM tasks" );
+		return $res->fetch_object()->count;
 	}
 	public static function escape( $str ){
 		return self::$mysqli->real_escape_string($str);

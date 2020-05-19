@@ -1,13 +1,21 @@
 extends layout
 block content
-	h1 Задачи
+	h2 Задачи
 	table.table
 		thead
 			tr
-				th.col-1 #
-				th.col-2 username
-				th.col-2 email
-				th content
+				- $s = $column == 'id' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
+				th.col-1
+					a( href="/?column=id&order=$s" ) #
+				- $s = $column == 'username' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
+				th.col-2
+					a( href="/?column=username&order=$s" ) username
+				- $s = $column == 'email' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
+				th.col-2
+					a( href="/?column=email&order=$s" ) email
+				- $s = $column == 'content' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
+				th
+					a( href="/?column=content&order=$s" ) content
 				th.col-1
 		tbody
 			- foreach( $tasks as $task )
@@ -24,6 +32,17 @@ block content
 						- if( $task->done )
 							svg.bi.bi-check(width='1em', height='1em', viewBox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
 								path(fill-rule='evenodd', d='M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z', clip-rule='evenodd')
+	if $pages > 1
+		ul.pagination
+			- $i = 1
+			while $i <= $pages
+				- $url ="/?column=$column&order=$order&page=$i"
+				li.page-item( class=( $page == $i ? 'active' : '' ) )
+					if $page == $i
+						span.page-link =$i
+					else
+						a.page-link( href=$url ) =$i
+				- $i++
 	a( href='/new_task' ) Новая задача
 	|   
 	if $admin

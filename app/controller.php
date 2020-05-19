@@ -1,5 +1,6 @@
 <?php
 require_once('model.php');
+
 abstract class Control{
 	protected $params;
 	public function __construct($params){
@@ -15,7 +16,21 @@ class DefaultControl extends Control{
 }
 class ShowIndex extends Control{
 	public function process(){
-		Phug::displayFile('app/view/tasks.pug', [ 'tasks' => Task::all(), 'admin' => $_SESSION['admin'] ], [ 'pretty' => true ]);
+		$q =$this->params['path']['query'];
+		$column = array_key_exists( 'column', $q ) ? $q[ 'column' ] : 'id';
+		$order = array_key_exists( 'order', $q ) ? $q[ 'order' ] : 'desc';
+		$page = array_key_exists( 'page', $q ) ? ((int) $q[ 'page' ]) : 1;
+		$count = Task::count();
+		$pages = ceil( $count / PER_PAGE );
+		$page = array_key_exists( 'page', $q ) ? $q[ 'page' ] : 1;
+		Phug::displayFile('app/view/tasks.pug', [ 
+			'tasks' => Task::all( $column, $order, $page ), 
+			'admin' => $_SESSION['admin'],
+			'column' => $column,
+			'order' => $order,
+			'page' => $page,
+			'pages' => $pages
+		], [ 'pretty' => true ]);
 	}
 }
 class NewTask extends Control{
@@ -62,9 +77,9 @@ class UpdateTask extends Control{
 	public function process(){
 		print_r($_POST);
 		$task = Task::find($_POST['id']);
-		$task->username = $_POST['username'];
-		$task->email = $_POST['email'];
-		$task->content = $_POST['content'];
+		$task->username = htmlspecialchars($_POST['username']);
+		$task->email = htmlspecialchars($_POST['email']);
+		$task->content = htmlspecialchars($_POST['content']);
 		$task->done =  array_key_exists( 'done' , $_POST );
 		$task->save();
 	}

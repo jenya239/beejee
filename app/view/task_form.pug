@@ -1,9 +1,9 @@
 extends layout
 block content
 	h1 Задача
-	- $action = $task->id ? '/update_task' : '/create_task'
+	- $action = property_exists( $task, 'id' ) ? '/update_task' : '/create_task'
 	form( action=$action method='post' )
-		if $task->id
+		if property_exists( $task, 'id' )
 			input(type='hidden', name='id', value=$task->id)
 		.form-group
 			label(for='inputUsername') Имя пользователя
@@ -24,7 +24,7 @@ block content
 					input#doneInput.form-check-input(type='checkbox', name='done')
 				label.form-check-label(for='doneInput') Выполнено
 		button.btn.btn-primary(type='submit')
-			if $task->id
+			if property_exists( $task, 'id' )
 				| Изменить
 			else
 				| Создать
