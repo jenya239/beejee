@@ -1,0 +1,13 @@
+extends layout
+block content
+	h1 Авторизация
+	form( action='/login' method='post' )
+		.form-group
+			label(for='inputLogin') Логин
+			input#inputLogin.form-control(type='text', aria-describedby='loginHelp', name='login')
+			small#loginHelp.form-text.text-muted 
+		.form-group
+			label(for='inputPassword') Пароль
+			input#inputPassword.form-control(type='password', aria-describedby='emailHelp', name='password')
+			small#passwordHelp.form-text.text-muted
+		button.btn.btn-primary(type='submit') Войти

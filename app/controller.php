@@ -14,7 +14,7 @@ class DefaultControl extends Control{
 }
 class ShowIndex extends Control{
 	public function process(){
-		Phug::displayFile('app/view/tasks.pug', [ 'tasks' => Task::all() ], [ 'pretty' => true ]);
+		Phug::displayFile('app/view/tasks.pug', [ 'tasks' => Task::all(), 'admin' => $_SESSION['admin'] ], [ 'pretty' => true ]);
 	}
 }
 class NewTask extends Control{
@@ -30,6 +30,24 @@ class CreateTask extends Control{
 		$task->email = $_POST['email'];
 		$task->content = $_POST['content'];
 		$task->save();
+	}
+}
+class SignIn extends Control{
+	public function process(){
+		Phug::displayFile('app/view/signin.pug', [], [ 'pretty' => true ]);
+	}
+}
+class Login extends Control{
+	public function process(){
+		if( $_POST['login'] == 'admin' && $_POST['password'] == '123' ){
+			print_r($_POST);
+			$_SESSION['admin'] = true;
+		}
+	}
+}
+class Logout extends Control{
+	public function process(){
+		$_SESSION['admin'] = false;
 	}
 }
 ?>
