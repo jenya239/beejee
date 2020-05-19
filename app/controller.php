@@ -6,6 +6,7 @@ abstract class Control{
 		$this->params = $params;
 	}
 	abstract public function process();
+	public function check_admin(){ return false; }
 }
 class DefaultControl extends Control{
 	public function process(){
@@ -19,7 +20,7 @@ class ShowIndex extends Control{
 }
 class NewTask extends Control{
 	public function process(){
-		Phug::displayFile('app/view/task_form.pug', [], [ 'pretty' => true ]);
+		Phug::displayFile('app/view/task_form.pug', [ 'task' => new Task() ], [ 'pretty' => true ]);
 	}
 }
 class CreateTask extends Control{
@@ -49,5 +50,24 @@ class Logout extends Control{
 	public function process(){
 		$_SESSION['admin'] = false;
 	}
+	public function check_admin(){ return true; }
+}
+class Edit extends Control{
+	public function process(){
+		Phug::displayFile('app/view/task_form.pug', [ 'task' => Task::find( $this->params['id'] ), 'admin' => $_SESSION['admin'] ], [ 'pretty' => true ]);
+	}
+	public function check_admin(){ return true; }
+}
+class UpdateTask extends Control{
+	public function process(){
+		print_r($_POST);
+		$task = Task::find($_POST['id']);
+		$task->username = $_POST['username'];
+		$task->email = $_POST['email'];
+		$task->content = $_POST['content'];
+		$task->done =  array_key_exists( 'done' , $_POST );
+		$task->save();
+	}
+	public function check_admin(){ return true; }
 }
 ?>

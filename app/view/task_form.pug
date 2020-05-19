@@ -1,16 +1,30 @@
 extends layout
 block content
 	h1 Задача
-	form( action='/create_task' method='post' )
+	- $action = $task->id ? '/update_task' : '/create_task'
+	form( action=$action method='post' )
+		if $task->id
+			input(type='hidden', name='id', value=$task->id)
 		.form-group
 			label(for='inputUsername') Имя пользователя
-			input#inputUsername.form-control(type='text', aria-describedby='usernameHelp', name='username')
+			input#inputUsername.form-control(type='text', aria-describedby='usernameHelp', name='username', value=$task->username)
 			small#usernameHelp.form-text.text-muted 
 		.form-group
 			label(for='inputEmail') E-mail
-			input#inputEmail.form-control(type='email', aria-describedby='emailHelp', name='email')
+			input#inputEmail.form-control(type='email', aria-describedby='emailHelp', name='email', value=$task->email)
 			small#emailHelp.form-text.text-muted 
 		.form-group
 			label(for='contentTextarea') Текст
-			textarea#contentTextarea.form-control(rows='5', name='content')
-		button.btn.btn-primary(type='submit') Создать
+			textarea#contentTextarea.form-control(rows='5', name='content')=$task->content
+		if $admin
+			.form-group.form-check
+				if $task->done
+					input#doneInput.form-check-input(type='checkbox', name='done', checked='checked')
+				else
+					input#doneInput.form-check-input(type='checkbox', name='done')
+				label.form-check-label(for='doneInput') Выполнено
+		button.btn.btn-primary(type='submit')
+			if $task->id
+				| Изменить
+			else
+				| Создать

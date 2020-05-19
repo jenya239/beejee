@@ -12,7 +12,11 @@ block content
 		tbody
 			- foreach( $tasks as $task )
 				tr
-					th(scope='row')= $task->id
+					th
+						if $admin
+							a( href="/tasks/$task->id/edit" )= $task->id
+						else
+							= $task->id
 					td= $task->username
 					td= $task->email
 					td= $task->content

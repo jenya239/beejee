@@ -16,10 +16,18 @@ class Routing{
 			$c = new Logout( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/create_task' ){
 			$c = new CreateTask( [ 'path' => $this->path ] );
+		}else if( preg_match('/^\/tasks\/(\d+)\/edit$/', $this->path[ 'path' ], $matches ) ){
+			$c = new Edit( [ 'path' => $this->path, 'id' => $matches[1] ] );
+		}else if( $this->path[ 'path' ] == '/update_task' ){
+			$c = new UpdateTask( [ 'path' => $this->path ] );
 		}else{
 			$c = new DefaultControl( [ 'path' => $this->path ] );
 		}
-		$c->process();
+		if( !$_SESSION['admin'] && $c->check_admin() ){
+			header('Location: /signin');
+		}else{
+			$c->process();
+		}
 	}
 }
 ?>
