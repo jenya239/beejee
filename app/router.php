@@ -12,15 +12,13 @@ class Routing{
 		if( $this->path[ 'path' ] == '/' ){
 			$c = new ShowIndex( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/new_task' ){
-			$c = new NewTask( [ 'path' => $this->path ] );
+			$c = new CreateTask( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/signin' ){
 			$c = new SignIn( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/logout' ){
 			$c = new Logout( [ 'path' => $this->path ] );
-		}else if( $this->path[ 'path' ] == '/create_task' ){
-			$c = new CreateTask( [ 'path' => $this->path ] );
 		}else if( preg_match('/^\/tasks\/(\d+)\/edit$/', $this->path[ 'path' ], $matches ) ){
-			$c = new UpdateTask( [ 'path' => $this->path ] );
+			$c = new UpdateTask( [ 'path' => $this->path, 'id' => $matches[1] ] );
 		}else{
 			$c = new DefaultControl( [ 'path' => $this->path ] );
 		}

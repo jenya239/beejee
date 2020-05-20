@@ -1,6 +1,7 @@
 {
     "require": {
         "twbs/bootstrap": "4.4.1",
-        "phug/phug": "^1.7"
+        "phug/phug": "^1.7",
+        "components/jquery": "^3.5"
     }
 }

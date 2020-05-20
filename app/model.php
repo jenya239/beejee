@@ -24,7 +24,7 @@ class Table{
 		return $arr;
 	}
 	public function find($id){
-		$res = self::$mysqli->query( "SELECT * FROM $this->model_class WHERE id = " . ((int) $id) );
+		$res = self::$mysqli->query( "SELECT * FROM $this->name WHERE id = " . ((int) $id) );
 		return $res->fetch_object( $this->model_class );
 	}
 	public function count(){
@@ -48,7 +48,6 @@ abstract class Model{
 		foreach( $this->table->validations as $validation ){
 			$validation->validate( $this );
 		}
-		print_r($this->errors);
 	}
 }
 
@@ -65,13 +64,20 @@ class Task extends Model{
 		$email = $this->table->escape( $this->email );
 		$content = $this->table->escape( $this->content );
 		$done =$this->done ? 1 : 0;
+		$edited = $this->edited ? 1 : 0;
 		$sql =$this->id
-			? "UPDATE tasks SET username='$username', email='$email', content='$content', done=$done, edited=1 WHERE id=$this->id"
+			? "UPDATE tasks SET content='$content', done=$done, edited=$edited WHERE id=$this->id"
 			: "INSERT INTO tasks (username, email, content) VALUES ('$username', '$email', '$content');";
 		Table::$mysqli->query( $sql );
 	}
 }
 Task::$table_obj = new Table( 'tasks', 'Task' );
+Task::$table_obj->validations = [
+	new Presence( Task::$table_obj, 'username' ),
+	new Presence( Task::$table_obj, 'email' ),
+	new Presence( Task::$table_obj, 'content' ),
+	new EmailValidation( User::$table_obj, 'email' )
+];
 
 class User extends Model{
 	public static $table_obj;
@@ -83,13 +89,11 @@ class User extends Model{
 		$this->login = $login;
 		$this->password = $password;
 	}
-	public function check_admin(){
-		return $this->login == 'admin' && $this->password == '123';
-	}
 }
 User::$table_obj = new Table( '', 'User' );
 User::$table_obj->validations = [
 	new Presence( User::$table_obj, 'login' ),
-	new Presence( User::$table_obj, 'password' )
+	new Presence( User::$table_obj, 'password' ),
+	new AuthValidation( User::$table_obj, 'login' )
 ];
 ?>

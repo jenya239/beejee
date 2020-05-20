@@ -1,13 +1,21 @@
 mixin field( $object, $name, $title, $type, $width_class )
 	- $cptl = ucfirst( $name )
+	- $cType = ucfirst( $type )
 	.form-group
-		label(for="input$cptl" )= $title
-		input( id="input$cptl" ).form-control(
-			class=$width_class,
-			type=$type, aria-describedby="{$name}Help", name='login',
-			class=( array_key_exists( $name, $object->errors ) ? 'is-invalid' : '' ),
-			value=$object->{$name}
-		)
+		label(for="$type$cptl" )= $title
+		if $type == 'textarea'
+			textarea.form-control(
+				id="$type$cptl", class=$width_class, rows='5', name=$name,
+				class=( array_key_exists( $name, $object->errors ) ? 'is-invalid' : '' )
+			)=$object->{$name}
+		else
+			input.form-control(
+				id="$type$cptl",
+				class=$width_class,
+				type=$type, aria-describedby="{$name}Help", name=$name,
+				class=( array_key_exists( $name, $object->errors ) ? 'is-invalid' : '' ),
+				value=$object->{$name}
+			)
 		if array_key_exists( $name, $object->errors )
 			.invalid-feedback
 				each $s in $object->errors[$name]

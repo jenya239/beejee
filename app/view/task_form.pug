@@ -1,21 +1,15 @@
 extends layout
+include fields.pug
 block content
 	h1 Задача
-	- $action = property_exists( $task, 'id' ) ? "/tasks/$task->id/edit" : '/create_task'
+	- $action = property_exists( $task, 'id' ) ? "/tasks/$task->id/edit" : '/new_task'
 	form( action=$action method='post' )
 		if property_exists( $task, 'id' )
 			input(type='hidden', name='id', value=$task->id)
-		.form-group
-			label(for='inputUsername') Имя пользователя
-			input#inputUsername.form-control(type='text', aria-describedby='usernameHelp', name='username', value=$task->username)
-			small#usernameHelp.form-text.text-muted 
-		.form-group
-			label(for='inputEmail') E-mail
-			input#inputEmail.form-control(type='email', aria-describedby='emailHelp', name='email', value=$task->email)
-			small#emailHelp.form-text.text-muted 
-		.form-group
-			label(for='contentTextarea') Текст
-			textarea#contentTextarea.form-control(rows='5', name='content')=$task->content
+		if ! property_exists( $task, 'id' )
+			+field( $task, 'username', 'Имя пользователя', 'text', 'w-80' )
+			+field( $task, 'email', 'E-mail', 'email', 'w-80' )
+		+field( $task, 'content', 'Текст', 'textarea', 'w-80' )
 		if $admin
 			.form-group.form-check
 				if $task->done
