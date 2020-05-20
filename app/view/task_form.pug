@@ -1,7 +1,7 @@
 extends layout
 block content
 	h1 Задача
-	- $action = property_exists( $task, 'id' ) ? '/update_task' : '/create_task'
+	- $action = property_exists( $task, 'id' ) ? "/tasks/$task->id/edit" : '/create_task'
 	form( action=$action method='post' )
 		if property_exists( $task, 'id' )
 			input(type='hidden', name='id', value=$task->id)

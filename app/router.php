@@ -15,15 +15,11 @@ class Routing{
 			$c = new NewTask( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/signin' ){
 			$c = new SignIn( [ 'path' => $this->path ] );
-		}else if( $this->path[ 'path' ] == '/login' ){
-			$c = new Login( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/logout' ){
 			$c = new Logout( [ 'path' => $this->path ] );
 		}else if( $this->path[ 'path' ] == '/create_task' ){
 			$c = new CreateTask( [ 'path' => $this->path ] );
 		}else if( preg_match('/^\/tasks\/(\d+)\/edit$/', $this->path[ 'path' ], $matches ) ){
-			$c = new Edit( [ 'path' => $this->path, 'id' => $matches[1] ] );
-		}else if( $this->path[ 'path' ] == '/update_task' ){
 			$c = new UpdateTask( [ 'path' => $this->path ] );
 		}else{
 			$c = new DefaultControl( [ 'path' => $this->path ] );

@@ -1,4 +1,6 @@
 <?php
+require_once('validation.php');
+
 const PER_PAGE = 3;
 
 class Table{
@@ -37,8 +39,16 @@ Table::$mysqli = new mysqli("localhost", "bj", "123456", "bj");
 
 abstract class Model{
 	protected $table;
+	public $errors;
 	public function __construct(){
 		$this->table = static::$table_obj;
+		$this->errors = [];
+	}
+	public function validate(){
+		foreach( $this->table->validations as $validation ){
+			$validation->validate( $this );
+		}
+		print_r($this->errors);
 	}
 }
 
@@ -66,8 +76,8 @@ Task::$table_obj = new Table( 'tasks', 'Task' );
 class User extends Model{
 	public static $table_obj;
 	public static $admin;
-	private $login;
-	private $password;
+	public $login;
+	public $password;
 	public function __construct( $login, $password ){
 		parent::__construct();
 		$this->login = $login;
@@ -77,5 +87,9 @@ class User extends Model{
 		return $this->login == 'admin' && $this->password == '123';
 	}
 }
-User::$table_obj = new User( '', 'User' );
+User::$table_obj = new Table( '', 'User' );
+User::$table_obj->validations = [
+	new Presence( User::$table_obj, 'login' ),
+	new Presence( User::$table_obj, 'password' )
+];
 ?>

@@ -1,13 +1,8 @@
 extends layout
+include fields.pug
 block content
 	h1 Авторизация
-	form( action='/login' method='post' )
-		.form-group
-			label(for='inputLogin') Логин
-			input#inputLogin.form-control.w-50(type='text', aria-describedby='loginHelp', name='login')
-			small#loginHelp.form-text.text-muted 
-		.form-group
-			label(for='inputPassword') Пароль
-			input#inputPassword.form-control.w-50(type='password', aria-describedby='emailHelp', name='password')
-			small#passwordHelp.form-text.text-muted
+	form( action='/signin' method='post' )
+		+field( $user, 'login', 'Логин', 'text', 'w-50' )
+		+field( $user, 'password', 'Пароль', 'password', 'w-50' )
 		button.btn.btn-primary(type='submit') Войти

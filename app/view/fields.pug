@@ -1,0 +1,16 @@
+mixin field( $object, $name, $title, $type, $width_class )
+	- $cptl = ucfirst( $name )
+	.form-group
+		label(for="input$cptl" )= $title
+		input( id="input$cptl" ).form-control(
+			class=$width_class,
+			type=$type, aria-describedby="{$name}Help", name='login',
+			class=( array_key_exists( $name, $object->errors ) ? 'is-invalid' : '' ),
+			value=$object->{$name}
+		)
+		if array_key_exists( $name, $object->errors )
+			.invalid-feedback
+				each $s in $object->errors[$name]
+					=$s
+					br
+		small.form-text.text-muted( id="{$name}Help" )

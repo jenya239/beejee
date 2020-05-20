@@ -50,16 +50,17 @@ class CreateTask extends Control{
 }
 class SignIn extends Control{
 	public function process(){
-		Phug::displayFile('app/view/signin.pug', [], [ 'pretty' => true ]);
-	}
-}
-class Login extends Control{
-	public function process(){
-		$user = new User( $_POST['login'], $_POST['password'] );
-		if( $user->check_admin() ){
-			print_r($_POST);
-			$_SESSION['admin'] = true;
+		if( $_SERVER['REQUEST_METHOD'] === 'POST' ){
+			$user = new User( $_POST['login'], $_POST['password'] );
+			$user->validate();
+			if( $user->check_admin() ){
+				print_r($_POST);
+				$_SESSION['admin'] = true;
+			}
+		}else{
+			$user = new User( '', '' );
 		}
+		Phug::displayFile('app/view/signin.pug', [ 'user' => $user ], [ 'pretty' => true ]);
 	}
 }
 class Logout extends Control{
@@ -68,22 +69,21 @@ class Logout extends Control{
 	}
 	public function check_admin(){ return true; }
 }
-class Edit extends Control{
-	public function process(){
-		Phug::displayFile('app/view/task_form.pug', [ 'task' => Task::find( $this->params['id'] ), 'admin' => $_SESSION['admin'] ], [ 'pretty' => true ]);
-	}
-	public function check_admin(){ return true; }
-}
 class UpdateTask extends Control{
 	public function process(){
-		print_r($_POST);
-		$task = Task::$table_obj->find($_POST['id']);
-		$task->username = htmlspecialchars($_POST['username']);
-		$task->email = htmlspecialchars($_POST['email']);
-		$task->content = htmlspecialchars($_POST['content']);
-		$task->done = array_key_exists( 'done' , $_POST );
-		$task->edited = true;
-		$task->save();
+		if( $_SERVER['REQUEST_METHOD'] === 'POST' ){
+			print_r($_POST);
+			$task = Task::$table_obj->find($_POST['id']);
+			$task->username = htmlspecialchars($_POST['username']);
+			$task->email = htmlspecialchars($_POST['email']);
+			$task->content = htmlspecialchars($_POST['content']);
+			$task->done = array_key_exists( 'done' , $_POST );
+			$task->edited = true;
+			$task->save();
+		}else{
+			$task = Task::find( $this->params['id'] );
+		}
+		Phug::displayFile('app/view/task_form.pug', [ 'task' => $task, 'admin' => $_SESSION['admin'] ], [ 'pretty' => true ]);
 	}
 	public function check_admin(){ return true; }
 }
