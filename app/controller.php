@@ -18,13 +18,13 @@ class ShowIndex extends Control{
 	public function process(){
 		$q =$this->params['path']['query'];
 		$column = array_key_exists( 'column', $q ) ? $q[ 'column' ] : 'id';
-		$order = array_key_exists( 'order', $q ) ? $q[ 'order' ] : 'desc';
+		$order = array_key_exists( 'order', $q ) ? $q[ 'order' ] : 'asc';
 		$page = array_key_exists( 'page', $q ) ? ((int) $q[ 'page' ]) : 1;
-		$count = Task::count();
+		$count = Task::$table_obj->count();
 		$pages = ceil( $count / PER_PAGE );
 		$page = array_key_exists( 'page', $q ) ? $q[ 'page' ] : 1;
 		Phug::displayFile('app/view/tasks.pug', [ 
-			'tasks' => Task::all( $column, $order, $page ), 
+			'tasks' => Task::$table_obj->all( $column, $order, $page ), 
 			'admin' => $_SESSION['admin'],
 			'column' => $column,
 			'order' => $order,
@@ -55,7 +55,8 @@ class SignIn extends Control{
 }
 class Login extends Control{
 	public function process(){
-		if( $_POST['login'] == 'admin' && $_POST['password'] == '123' ){
+		$user = new User( $_POST['login'], $_POST['password'] );
+		if( $user->check_admin() ){
 			print_r($_POST);
 			$_SESSION['admin'] = true;
 		}
@@ -76,11 +77,12 @@ class Edit extends Control{
 class UpdateTask extends Control{
 	public function process(){
 		print_r($_POST);
-		$task = Task::find($_POST['id']);
+		$task = Task::$table_obj->find($_POST['id']);
 		$task->username = htmlspecialchars($_POST['username']);
 		$task->email = htmlspecialchars($_POST['email']);
 		$task->content = htmlspecialchars($_POST['content']);
-		$task->done =  array_key_exists( 'done' , $_POST );
+		$task->done = array_key_exists( 'done' , $_POST );
+		$task->edited = true;
 		$task->save();
 	}
 	public function check_admin(){ return true; }

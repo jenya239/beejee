@@ -1,4 +1,9 @@
 extends layout
+
+mixin check
+	svg.bi.bi-check(width='1em', height='1em', viewBox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+		path(fill-rule='evenodd', d='M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z', clip-rule='evenodd')
+
 block content
 	h2 Задачи
 	table.table
@@ -9,14 +14,15 @@ block content
 					a( href="/?column=id&order=$s" ) #
 				- $s = $column == 'username' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
 				th.col-2
-					a( href="/?column=username&order=$s" ) username
+					a( href="/?column=username&order=$s" ) имя пользователя
 				- $s = $column == 'email' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
 				th.col-2
 					a( href="/?column=email&order=$s" ) email
-				- $s = $column == 'content' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
-				th
-					a( href="/?column=content&order=$s" ) content
+				th текст задачи
+				- $s = $column == 'done' ? ( $order == 'asc' ? 'desc' : 'asc' ) : 'asc';
 				th.col-1
+					a( href="/?column=done&order=$s" ) статус
+				th.col-1 отредактировано
 		tbody
 			- foreach( $tasks as $task )
 				tr
@@ -30,8 +36,10 @@ block content
 					td= $task->content
 					td
 						- if( $task->done )
-							svg.bi.bi-check(width='1em', height='1em', viewBox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-								path(fill-rule='evenodd', d='M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z', clip-rule='evenodd')
+							+check
+					td
+						- if( $task->edited )
+							+check
 	if $pages > 1
 		ul.pagination
 			- $i = 1
